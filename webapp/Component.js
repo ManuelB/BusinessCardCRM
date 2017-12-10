@@ -38,6 +38,7 @@ sap.ui.define([
 				  // The signed-in user info.
 				  var user = result.user;
 				  window.localStorage.firebaseGoogleToken = token;
+				  
 				}).catch(function(error) {
 				  // Handle Errors here.
 				  var errorCode = error.code;
@@ -50,6 +51,7 @@ sap.ui.define([
 				});
 			});
 			this.setModel(oComponentModel);
+			
 			// enable routing
 			this.getRouter().initialize();
 

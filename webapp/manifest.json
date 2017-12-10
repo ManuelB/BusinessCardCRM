@@ -14,7 +14,6 @@
 			"version": "1.40.12"
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -33,13 +32,11 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_belize"
-
 		]
 	},
-
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "incentergy.bccrm.BusinessCardCRM.view.BusinessCardCRM",
+			"viewName": "incentergy.bccrm.BusinessCardCRM.view.App",
 			"type": "XML"
 		},
 		"dependencies": {
@@ -62,30 +59,71 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
-				"async": true,
 				"viewPath": "incentergy.bccrm.BusinessCardCRM.view",
-				"controlAggregation": "pages",
-				"controlId": "idAppControl"
+				"controlId": "splitApp",
+				"controlAggregation": "detailPages",
+				"clearTarget": false,
+				"transition": "slide",
+				"bypassed": {
+					"target": "notFound"
+				}
 			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
-			}],
+			"routes": [
+				{
+					"pattern": "",
+					"name": "Home",
+					"target": [
+						"businessCardList",
+						"homeDetails"
+					]
+				},
+				{
+					"pattern": "BusinessCards/':count:'",
+					"name": "BusinessCards",
+					"target": [
+						"businessCardList",
+						"businessCardDetails"
+					]
+				},
+				{
+					"pattern": "addBusinessCard",
+					"name": "addBusinessCard",
+					"target": [
+						"businessCardList",
+						"businessCardDetails"
+					]
+				}
+			],
 			"targets": {
-				"TargetView1": {
-					"viewType": "XML",
-					"transition": "slide",
-					"clearAggregation": true,
-					"viewName": "View1"
+				"homeDetails": {
+					"viewName": "Home",
+					"controlId": "splitApp",
+					"controlAggregation": "detailPages"
+				},
+				"businessCardList": {
+					"viewName": "BusinessCardList",
+					"controlId": "splitApp",
+					"controlAggregation": "masterPages",
+					"clearControlAggregation": true
+				},
+				"businessCardDetails": {
+					"viewName": "BusinessCardDetails",
+					"controlId": "splitApp",
+					"controlAggregation": "detailPages"
+				},
+				"notFound": {
+					"viewName": "NotFound",
+					"transition": "show"
 				}
 			}
 		}
