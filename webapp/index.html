@@ -8,11 +8,13 @@
 		<title>BusinessCardCRM</title>
 
 		<script id="sap-ui-bootstrap"
-			src="../../resources/sap-ui-core.js"
-			data-sap-ui-libs="sap.m"
+			src="https://openui5.hana.ondemand.com/1.50.7/resources/sap-ui-core.js"
+			data-sap-ui-preload=“async“
+			data-sap-ui-libs="sap.m,openui5.community.model.firebase"
 			data-sap-ui-theme="sap_belize"
 			data-sap-ui-compatVersion="edge"
-			data-sap-ui-resourceroots='{"incentergy.bccrm.BusinessCardCRM": "./"}'>
+			data-sap-ui-xx-bindingSyntax="complex"
+			data-sap-ui-resourceroots='{"incentergy.bccrm.BusinessCardCRM": "./", "openui5.community.model.firebase" : "https://cdn.jsdelivr.net/npm/ui5-firebase-model@0.1.1/dist/resources/openui5/community/model/firebase"}'>
 		</script>
 
 		<link rel="stylesheet" type="text/css" href="css/style.css">
