@@ -5,6 +5,11 @@ sap.ui.define([
 	"use strict";
 
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardCRM", {
+		onNavButtonPress: function () {
+		    var oSplitApp = this.getView().getParent().getParent();
+		    var oMaster = oSplitApp.getMasterPages()[0];
+		    oSplitApp.toMaster(oMaster, "flip");
+		},
 		onAddBusinessCard: function(oEvent) {
 			// creating input on-the-fly
 	        var input = jQuery(document.createElement("input"));
