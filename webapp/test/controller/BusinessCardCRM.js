@@ -13,7 +13,7 @@ sap.ui.define(["incentergy/bccrm/BusinessCardCRM/controller/BusinessCardCRM.cont
 	});
 
 	QUnit.test("Send file to Google OCR Engine", function(assert) {
-		expect(2);
+		expect(3);
 		var done = assert.async();
 		fetch("test/resources/Manuel_Blechschmidt_Business_Card_Small.jpg", {
 			credentials: 'same-origin' // <- this is mandatory to deal with cookies
@@ -25,10 +25,11 @@ sap.ui.define(["incentergy/bccrm/BusinessCardCRM/controller/BusinessCardCRM.cont
 		}).then(function(ManuelBlechschmidtBusinessCardBlob) {
 		  assert.ok(ManuelBlechschmidtBusinessCardBlob);
 		  var controller = new BusinessCardCRM();
+		  controller.onInit();
 		  controller.processImage(ManuelBlechschmidtBusinessCardBlob).then(function (oResult) {
-		  	console.log(oResult);
+		  	assert.equal("Incentergy\nGmbH\nManuel Blechschmidt\nCEO\nwww.incentergy.de\nPhone: +49 173 632 26 21\nMail: manuel.blechschmidt@incentergy.de\n", oResult.result.responses[0].fullTextAnnotation.text);
+		    done();
 		  });
-		  done();
 		});
 	});
 });
