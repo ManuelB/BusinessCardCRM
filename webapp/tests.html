@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unit tests for BusinessCardCRM</title>
+<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+<meta charset="UTF-8">
+
+	<script id="sap-ui-bootstrap"
+			src="https://openui5.hana.ondemand.com/1.50.7/resources/sap-ui-core.js"
+			data-sap-ui-preload="async"
+			data-sap-ui-libs="sap.m,openui5.community.model.firebase"
+			data-sap-ui-theme="sap_belize"
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-xx-bindingSyntax="complex"
+			data-sap-ui-resourceroots='{"incentergy.bccrm.BusinessCardCRM": "./", "openui5.community.model.firebase" : "https://cdn.jsdelivr.net/npm/ui5-firebase-model@0.1.1/dist/resources/openui5/community/model/firebase"}'>
+	</script>
+	<script src="https://apis.google.com/js/client.js"></script>
+	<script>
+		sap.ui.getCore().attachInit(function() {
+			jQuery.sap.require("sap.ui.qunit.qunit-css");
+			jQuery.sap.require("sap.ui.thirdparty.qunit");
+			jQuery.sap.require("sap.ui.qunit.qunit-junit");
+			jQuery.sap.require("sap.ui.qunit.qunit-coverage");
+			
+			sap.ui.define(["incentergy/bccrm/BusinessCardCRM/test/controller/BusinessCardCRM"], function() {
+					"use strict";
+				}
+			);
+	
+		});
+	
+	</script>
+</head>
+<body>
+	<div id="content"></div>
+	<h1 id="qunit-header">Unit tests for BusinessCardCRM</h1>
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture"></div>
+</body>
+</html>

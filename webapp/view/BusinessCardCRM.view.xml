@@ -8,6 +8,8 @@
 				</List>
 				<footer>
 					<Toolbar>
+						<Button id="unauthorizeWithGoogle" icon="sap-icon://key" tooltip="{i18n>UnauthorizeGoogle}" press="unauthorizeWithGoogle" enabled="false"/>
+						<Button id="authorizeWithGoogle" icon="sap-icon://primary-key" tooltip="{i18n>AuthorizeWithGoogle}" press="authorizeWithGoogle" enabled="false"/>
 						<ToolbarSpacer />
 						<Button icon="sap-icon://camera" press="onAddBusinessCard" />
 					</Toolbar>
