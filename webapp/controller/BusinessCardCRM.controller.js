@@ -57,7 +57,7 @@ sap.ui.define([
 		processImage: function(oBlob) {
 			var pPromise = new Promise(function (resolve, reject) {
 				gapi.client.load("https://vision.googleapis.com/$discovery/rest", "v1", function() {
-					gapi.client.setApiKey('AIzaSyDRLQtMVaeAMFo0fr-jHO4DbzSR0cPhEr0');
+					gapi.client.setApiKey('******');
 					var reader = new FileReader();
 					reader.readAsDataURL(oBlob);
 					reader.onloadend = function() {
