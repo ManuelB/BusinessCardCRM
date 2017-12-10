@@ -32,7 +32,7 @@ sap.ui.define([
 			var domInput = document.createElement("input");
 			var input = jQuery(domInput);
 			input.attr("type", "file");
-			input.onchange(function () {
+			input.change(function () {
 				me.processImage(domInput.files[0]).then(function (oParameters) {
 					me.addBusinessCard(oParameters);
 				});
