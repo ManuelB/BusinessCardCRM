@@ -7,6 +7,6 @@ This repository contains a CRM using the following technologies:
  
 # Screenshots
 
-![Overview](screenshots/Overview.png)
-![OCR](screenshots/OCR.png)
-![NER](screenshots/NER.png)
+![Overview](webapp/screenshots/Overview.png)
+![OCR](webapp/screenshots/OCR.png)
+![NER](webapp/screenshots/NER.png)
