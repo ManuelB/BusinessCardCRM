@@ -4,10 +4,9 @@ This repository contains a CRM using the following technologies:
  * Google Firebase
  * Google Vision (OCR Text Recognition)
  * Google Vision (Named Entity Recognition)
+ 
+# Screenshots
 
-
-# TODO
-
- * Show Raw Results - done
- * Make data editable - done
- * Enhance vision capabilities
+![Overview](screenshots/Overview.png)
+![OCR](screenshots/OCR.png)
+![NER](screenshots/NER.png)
