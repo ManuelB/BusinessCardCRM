@@ -1,4 +1,4 @@
-sap.ui.define(["incentergy/bccrm/BusinessCardCRM/controller/BusinessCardCRM.controller"], function(BusinessCardCRM) {
+sap.ui.define(["incentergy/bccrm/BusinessCardCRM/controller/BusinessCardList.controller"], function(BusinessCardList) {
 	"use strict";
 
 	QUnit.module("Module name", {
@@ -24,9 +24,9 @@ sap.ui.define(["incentergy/bccrm/BusinessCardCRM/controller/BusinessCardCRM.cont
 			assert.ok(false);
 		}).then(function(ManuelBlechschmidtBusinessCardBlob) {
 		  assert.ok(ManuelBlechschmidtBusinessCardBlob);
-		  var controller = new BusinessCardCRM();
+		  var controller = new BusinessCardList();
 		  controller.onInit();
-		  controller.processImage(ManuelBlechschmidtBusinessCardBlob).then(function (oResult) {
+		  controller.processImageOCR(ManuelBlechschmidtBusinessCardBlob).then(function (oResult) {
 		  	assert.equal("Incentergy\nGmbH\nManuel Blechschmidt\nCEO\nwww.incentergy.de\nPhone: +49 173 632 26 21\nMail: manuel.blechschmidt@incentergy.de\n", oResult.result.responses[0].fullTextAnnotation.text);
 		    done();
 		  });

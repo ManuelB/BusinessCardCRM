@@ -88,7 +88,7 @@
 					]
 				},
 				{
-					"pattern": "BusinessCards/':count:'",
+					"pattern": "BusinessCards/:id:",
 					"name": "BusinessCards",
 					"target": [
 						"businessCardList",

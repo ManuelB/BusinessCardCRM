@@ -1,13 +1,17 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	controllerName="incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList" xmlns:html="http://www.w3.org/1999/xhtml">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList">
 	<Page title="{i18n>BusinessCards}">
-		<List items="{/BusinessCards}">
-			<StandardListItem text="{FirstName} {LastName}"></StandardListItem>
+		<List id="list" items="{/BusinessCards}" itemPress="onPressItem" growing="true" mode="MultiSelect">
+			<items>
+				<StandardListItem type="Active" title="{FirstName} {LastName}" description="{Position} {Organization}" icon="sap-icon://person-placeholder"/>
+			</items>
 		</List>
 		<footer>
 			<Toolbar>
-				<ToolbarSpacer/>
-				<Button icon="sap-icon://camera" press="onAddBusinessCard"/>
+				<content>
+					<Button id="__button1" icon="sap-icon://delete" tooltip="{i18n>delete}" press="onPressDelete"/>
+					<ToolbarSpacer/>
+					<Button icon="sap-icon://camera" press="onAddBusinessCard"/>
+				</content>
 			</Toolbar>
 		</footer>
 	</Page>

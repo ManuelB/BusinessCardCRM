@@ -1,6 +1,7 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller"
-], function(Controller) {
+	"sap/ui/core/mvc/Controller",
+	"sap/ui/core/UIComponent"
+], function(Controller, UIComponent) {
 	"use strict";
 
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardDetails", {
@@ -10,9 +11,16 @@ sap.ui.define([
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 		 * @memberOf incentergy.bccrm.BusinessCardCRM.view.BusinessCardDetails
 		 */
-		//	onInit: function() {
-		//
-		//	},
+		onInit: function() {
+			var me = this;
+			UIComponent.getRouterFor(this).getRoute("BusinessCards").attachPatternMatched(function (oEvent) {
+				me.getView().bindElement("/BusinessCards/"+oEvent.getParameter("arguments").id);
+			});
+		},
+		
+		formatJSON: function (oObject) {
+			return "<pre>"+JSON.stringify(oObject, null, 2)+"</pre>";
+		}
 
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered

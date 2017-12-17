@@ -1,10 +1,87 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	controllerName="incentergy.bccrm.BusinessCardCRM.controller.BusinessCardDetails" xmlns:html="http://www.w3.org/1999/xhtml">
-	<App>
-		<pages>
-			<Page title="Title">
-				<content></content>
-			</Page>
-		</pages>
-	</App>
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.uxap" xmlns:layout="sap.ui.layout" xmlns:m="sap.m"
+	controllerName="incentergy.bccrm.BusinessCardCRM.controller.BusinessCardDetails" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+	<ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="false" showTitleInHeaderContent="true">
+		<headerTitle>
+			<ObjectPageHeader objectImageURI="{ImageBase64}" objectTitle="{FirstName} {LastName}" objectImageShape="Circle"
+				objectImageAlt="{FirstName} {LastName}" objectSubtitle="{Position}" isObjectIconAlwaysVisible="false" isObjectTitleAlwaysVisible="false"
+				isObjectSubtitleAlwaysVisible="false">
+				<actions>
+					<!-- <ObjectPageHeaderActionButton text="Edit" hideIcon="true" hideText="false" type="Emphasized" press="onEdit"/> -->
+				</actions>
+			</ObjectPageHeader>
+		</headerTitle>
+		<headerContent>
+			<layout:VerticalLayout>
+				<m:Link text="{Phone}" press="onPressPhoneLink"/>
+				<m:Link text="{Email}" press="onPressEmailLink"/>
+			</layout:VerticalLayout>
+			<layout:VerticalLayout>
+				<m:Label text="{Street}"/>
+				<m:Label text="{ZipCode} {City}"/>
+				<m:Label text="{Country}"/>
+			</layout:VerticalLayout>
+		</headerContent>
+		<sections>
+			<ObjectPageSection title="{i18n>Address}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>Address}">
+						<blocks>
+							<f:SimpleForm>
+								<f:content>
+									<m:Label text="{i18n>FirstName}"/>
+									<m:Input value="{FirstName}"/>
+									<m:Label text="{i18n>LastName}"/>
+									<m:Input value="{LastName}"/>
+									<m:Label text="{i18n>Position}"/>
+									<m:Input value="{Position}"/>
+									<m:Label text="{i18n>Street}"/>
+									<m:Input value="{Street}" />
+									<m:Label text="{i18n>ZipCode}"/>
+									<m:Input value="{ZipCode}" />
+									<m:Label text ="{i18n>City}" />
+									<m:Input value="{City}"/>
+									<m:Label text="{i18n>Country}"/>
+									<m:Input value="{Country}"/>
+									<m:Label text="{i18n>Phone}"/>
+									<m:Input value="{Phone}"/>
+									<m:Label text="{i18n>Email}"/>
+									<m:Input value="{Email}"/>
+								</f:content>
+							</f:SimpleForm>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+			<ObjectPageSection title="{i18n>RawResults}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>OCRResult}">
+						<blocks>
+							<m:Panel headerText="Show results from Google Vision API" expandable="true" expanded="false">
+								<m:FormattedText htmlText="{path: 'OCRResult', formatter: '.formatJSON'}"/>
+							</m:Panel>
+						</blocks>
+					</ObjectPageSubSection>
+					<ObjectPageSubSection title="{i18n>NERResult}">
+						<blocks>
+							<m:Panel headerText="Show results from Google Natural Language API" expandable="true" expanded="false">
+								<m:FormattedText htmlText="{path: 'NERResult', formatter: '.formatJSON'}"/>
+							</m:Panel>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+			<!-- TODO
+			<ObjectPageSection title="{i18n>Notes}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>Notes}">
+						<blocks>
+							<m:Text text="TODO"/>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+			-->
+		</sections>
+	</ObjectPageLayout>
 </mvc:View>
