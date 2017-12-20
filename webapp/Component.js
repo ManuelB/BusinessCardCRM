@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
 	"incentergy/bccrm/BusinessCardCRM/model/models",
-	"openui5/community/model/firebase/FirebaseModel"
-], function(UIComponent, Device, models, FirebaseModel) {
+	"openui5/community/model/firebase/FirebaseModel",
+	"sap/ui/model/json/JSONModel"
+], function(UIComponent, Device, models, FirebaseModel, JSONModel) {
 	"use strict";
 
 	return UIComponent.extend("incentergy.bccrm.BusinessCardCRM.Component", {
@@ -50,6 +51,22 @@ sap.ui.define([
 				  jQuery.sap.log.error(errorCode+" "+errorMessage);
 				});
 			});
+
+		    oComponentModel.removeItemWithPath = function(sPath) {
+		      var that = this;
+		      this.getFirebasePromise().then(function(oFirebase){
+		        var oDB = oFirebase.database();
+		        
+				oDB.ref(sPath).remove();
+				var aPathParts = sPath.match(/(.*)\/([^\/]*)/);
+				var oOldObject = that.getProperty(aPathParts[1]);
+		        delete oOldObject[aPathParts[2]];
+		        JSONModel.prototype.setProperty.apply(that, [aPathParts[1], oOldObject]);
+		        
+		      });
+		    };
+		    
+		    
 			this.setModel(oComponentModel);
 			
 			// enable routing

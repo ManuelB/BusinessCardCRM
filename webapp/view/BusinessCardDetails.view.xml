@@ -7,7 +7,7 @@
 				objectImageAlt="{FirstName} {LastName}" objectSubtitle="{Position}" isObjectIconAlwaysVisible="false" isObjectTitleAlwaysVisible="false"
 				isObjectSubtitleAlwaysVisible="false">
 				<actions>
-					<!-- <ObjectPageHeaderActionButton text="Edit" hideIcon="true" hideText="false" type="Emphasized" press="onEdit"/> -->
+					<ObjectPageHeaderActionButton text="Send to CRM" hideIcon="true" hideText="false" type="Emphasized" press="onSendToCRM"/>
 				</actions>
 			</ObjectPageHeader>
 		</headerTitle>
@@ -36,10 +36,10 @@
 									<m:Label text="{i18n>Position}"/>
 									<m:Input value="{Position}"/>
 									<m:Label text="{i18n>Street}"/>
-									<m:Input value="{Street}" />
+									<m:Input value="{Street}"/>
 									<m:Label text="{i18n>ZipCode}"/>
-									<m:Input value="{ZipCode}" />
-									<m:Label text ="{i18n>City}" />
+									<m:Input value="{ZipCode}"/>
+									<m:Label text="{i18n>City}"/>
 									<m:Input value="{City}"/>
 									<m:Label text="{i18n>Country}"/>
 									<m:Input value="{Country}"/>
@@ -49,6 +49,11 @@
 									<m:Input value="{Email}"/>
 								</f:content>
 							</f:SimpleForm>
+						</blocks>
+					</ObjectPageSubSection>
+					<ObjectPageSubSection title="{i18n>Image}">
+						<blocks>
+							<m:Image src="{ImageBase64}" alt="{FirstName} {LastName}"/>
 						</blocks>
 					</ObjectPageSubSection>
 				</subSections>

@@ -1,7 +1,8 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/UIComponent"
-], function(Controller, UIComponent) {
+	"sap/ui/core/UIComponent",
+	"./ScopeVisioCRM"
+], function(Controller, UIComponent, ScopeVisioCRM) {
 	"use strict";
 
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardDetails", {
@@ -20,6 +21,9 @@ sap.ui.define([
 		
 		formatJSON: function (oObject) {
 			return "<pre>"+JSON.stringify(oObject, null, 2)+"</pre>";
+		},
+		onSendToCRM: function(oEvent) {
+			ScopeVisioCRM.prototype.sendCustomerToCRM(this.getView().getBindingContext().getObject());
 		}
 
 		/**

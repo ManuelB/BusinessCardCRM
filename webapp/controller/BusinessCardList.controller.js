@@ -1,7 +1,8 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/UIComponent"
-], function(Controller, UIComponent) {
+	"sap/ui/core/UIComponent",
+	"sap/ui/core/routing/HashChanger"
+], function(Controller, UIComponent, HashChanger) {
 	"use strict";
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList", {
 		onInit: function() {
@@ -15,6 +16,24 @@ sap.ui.define([
 				});
 			}); // https://www.googleapis.com/auth/cloud-platform
 			// https://www.googleapis.com/auth/cloud-vision	
+			fetch("data/census-derived-all-first.txt", {
+				credentials: 'same-origin'
+			}).then(function(oResponse) {
+				return oResponse.text();
+				// http://deron.meranda.us/data/census-dist-male-first.txt
+			}).then(function(sCensusDerivedAll) {
+				me._aFirstNames = sCensusDerivedAll.split(/\n/).map(function(sLine) {
+					return sLine.split(/\s+/)[0];
+				});
+			});
+			fetch("data/lastnames.txt", {
+				credentials: 'same-origin'
+			}).then(function(oResponse) {
+				return oResponse.text();
+				// http://deron.meranda.us/data/census-dist-male-first.txt
+			}).then(function(sLastNames) {
+				me._aLastNames = sLastNames.split(/\n/);
+			});
 		},
 		/**
 		 * When the add business card button is clicked
@@ -38,6 +57,72 @@ sap.ui.define([
 		},
 		addBusinessCard: function(oBusinessCard) {
 			var oModel = this.getView().getModel();
+			try {
+				var sTextUpperCase = oBusinessCard.OCRResult.responses[0].fullTextAnnotation.text.toUpperCase();
+				var aFoundName = this._aFirstNames.filter(function(s) {
+					return sTextUpperCase.indexOf(s) != -1;
+					// Make longest match first one
+				}).sort(function(a, b) {
+					return b.length - a.length;
+				});
+				if (aFoundName.length > 0) {
+					var sFoundName = aFoundName[0];
+					oBusinessCard.FirstName = sFoundName.charAt(0).toUpperCase() + sFoundName.substring(1).toLowerCase();
+				}
+				var aFoundLastName = this._aLastNames.filter(function(s) {
+					return sTextUpperCase.indexOf(s.toUpperCase()) != -1;
+					// Make longest match first one
+				}).sort(function(a, b) {
+					return b.length - a.length;
+				});
+				if (aFoundLastName.length > 0) {
+					var sFoundLastName = aFoundLastName[0];
+					oBusinessCard.LastName = sFoundLastName.charAt(0).toUpperCase() + sFoundLastName.substring(1).toLowerCase();
+				}
+
+				var sText = oBusinessCard.OCRResult.responses[0].fullTextAnnotation.text;
+
+				// Find phone number
+				if (sText.match(/([+0-9()\- ]{5,})/)) {
+					oBusinessCard.Phone = RegExp.$1;
+				}
+				// Find Phone
+				if (sText.match(/([^ ]*@[^ ]*\.[0-9a-zA-Z]{2,6})/)) {
+					oBusinessCard.Email = RegExp.$1;
+				}
+
+				for (var i = 0; i < oBusinessCard.NERResult.entities.length; i++) {
+					var oEntity = oBusinessCard.NERResult.entities[0];
+					if (oEntity.type === "LOCATION") {
+						//   {
+						//     "mentions": [
+						//       {
+						//         "text": {
+						//           "beginOffset": 89,
+						//           "content": "S. Amphlett Blvd"
+						//         },
+						//         "type": "PROPER"
+						//       }
+						//     ],
+						//     "metadata": {
+						//       "mid": "/g/1tf6xlb4"
+						//     },
+						//     "name": "S. Amphlett Blvd",
+						//     "salience": 0.091283955,
+						//     "type": "LOCATION"
+						//   }
+						if ("wikipedia_url" in oEntity.metadata) {
+							oBusinessCard.City = oEntity.name;
+						} else {
+							oBusinessCard.Street = oEntity.name;
+						}
+
+					}
+				}
+
+			} catch (e) {
+				jQuery.sap.log.error(e);
+			}
 			if (!("FirstName" in oBusinessCard)) {
 				oBusinessCard.FirstName = "Unknown";
 			}
@@ -119,12 +204,17 @@ sap.ui.define([
 		 *@memberOf incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList
 		 */
 		onPressDelete: function(oEvent) {
+			var that = this;
 			// Remove all items that are selected
 			var oList = this.byId("list");
-			this.getView().getModel().getFirebasePromise().then(function (firebase) {
-				oList.getSelectedContexts().forEach(function (oContext) {
-					firebase.database().ref(oContext.getPath()).remove();
-				});
+			var oModel = this.getView().getModel();
+			oList.getSelectedContexts().forEach(function(oContext) {
+				var sPath = oContext.getPath();
+				oModel.removeItemWithPath(sPath);
+				// if the currently active card is deleted
+				if (("/" + HashChanger.getInstance().getHash()) === sPath) {
+					UIComponent.getRouterFor(that).navTo("Home");
+				}
 			});
 		}
 	});

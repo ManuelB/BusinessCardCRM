@@ -1,6 +1,8 @@
 <mvc:View xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
-	<Page title="{i18n>title}">
-		<content></content>
+	<Page title="{i18n>NotFound}">
+		<content>
+			<Title text="{i18n>YourViewWasNotFound}"></Title>
+		</content>
 	</Page>
 </mvc:View>
