@@ -9,6 +9,7 @@
 			<Toolbar>
 				<content>
 					<Button id="__button1" icon="sap-icon://delete" tooltip="{i18n>delete}" press="onPressDelete"/>
+					<Button id="WebRTCSendButton" visible="false" icon="sap-icon://enter-more" tooltip="{i18n>SendToOtherWebRTCClient}" press="onSendToOtherWebRTCClient" />
 					<ToolbarSpacer/>
 					<Button icon="sap-icon://camera" press="onAddBusinessCard"/>
 				</content>

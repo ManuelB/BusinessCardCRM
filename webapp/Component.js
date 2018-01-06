@@ -2,9 +2,8 @@ sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
 	"incentergy/bccrm/BusinessCardCRM/model/models",
-	"openui5/community/model/firebase/FirebaseModel",
-	"sap/ui/model/json/JSONModel"
-], function(UIComponent, Device, models, FirebaseModel, JSONModel) {
+	"incentergy/bccrm/BusinessCardCRM/model/LocalStorageModel"
+], function(UIComponent, Device, models, LocalStorageModel) {
 	"use strict";
 
 	return UIComponent.extend("incentergy.bccrm.BusinessCardCRM.Component", {
@@ -21,51 +20,11 @@ sap.ui.define([
 		init: function() {
 			// call the base component's init function
 			UIComponent.prototype.init.apply(this, arguments);
-			var oFBConfig = {
-			    apiKey: "AIzaSyB98nY09BXBnx3n5GVMlw0GD06tiRcq6xg",
-			    authDomain: "businesscardcrm.firebaseapp.com",
-			    databaseURL: "https://businesscardcrm.firebaseio.com",
-			    projectId: "businesscardcrm",
-			    storageBucket: "",
-			    messagingSenderId: "906525357736"
-			};
-			var oComponentModel = new FirebaseModel(null, oFBConfig);
-			// Login to firebase
-			oComponentModel.getFirebasePromise().then(function(firebase){
-				var provider = new firebase.auth.GoogleAuthProvider();
-			    firebase.auth().signInWithPopup(provider).then(function(result) {
-				  // This gives you a Google Access Token. You can use it to access the Google API.
-				  var token = result.credential.accessToken;
-				  // The signed-in user info.
-				  var user = result.user;
-				  window.localStorage.firebaseGoogleToken = token;
-				  
-				}).catch(function(error) {
-				  // Handle Errors here.
-				  var errorCode = error.code;
-				  var errorMessage = error.message;
-				  // The email of the user's account used.
-				  var email = error.email;
-				  // The firebase.auth.AuthCredential type that was used.
-				  var credential = error.credential;
-				  jQuery.sap.log.error(errorCode+" "+errorMessage);
-				});
-			});
-
-		    oComponentModel.removeItemWithPath = function(sPath) {
-		      var that = this;
-		      this.getFirebasePromise().then(function(oFirebase){
-		        var oDB = oFirebase.database();
-		        
-				oDB.ref(sPath).remove();
-				var aPathParts = sPath.match(/(.*)\/([^\/]*)/);
-				var oOldObject = that.getProperty(aPathParts[1]);
-		        delete oOldObject[aPathParts[2]];
-		        JSONModel.prototype.setProperty.apply(that, [aPathParts[1], oOldObject]);
-		        
-		      });
-		    };
-		    
+		
+			var oComponentModel = new LocalStorageModel("BusinessCardCRM");
+		    if(oComponentModel.getProperty("/BusinessCards") === undefined) {
+		    	oComponentModel.setProperty("/BusinessCards", []);	
+		    }
 		    
 			this.setModel(oComponentModel);
 			

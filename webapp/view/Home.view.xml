@@ -1,7 +1,30 @@
 <mvc:View xmlns:html="http://www.w3.org/1999/xhtml"
-	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
-	<Page title="{i18n>title}">
+	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:core="sap.ui.core" controllerName="incentergy.bccrm.BusinessCardCRM.controller.Home">
+	<Page title="{i18n>appTitle}">
 		<content>
+			<Panel headerText="What is this application good for?">
+				<Text text="This application can be used to make a photo of a business card.
+					The image will be analyzed by the Google Vision API and afterwards the
+					text will be feed into the Google Named Entity Recognition Engine.
+					Based on some look up tables and regular expressions typically attributes
+					like first name, last name, phone number and email address are extracted.
+					The data will be saved in the local storage of the device.
+					If multiple clients like a smartphone and a desktop PC want to work share business card
+					data. They can join together through a WebRTC session and data can be send throug this
+					connection." /> 
+			</Panel>
+			<Panel headerText="Description for current WebRTC Connection" id="webRTCSDPPanel">
+				<core:HTML id="webRTCSDPText" sanitizeContent="false" />
+				<TextArea id="webRTCOfferAnswer" visible="false" rows="10" cols="50"></TextArea>
+				<Button id="webRTCOfferAnswerButton"  visible="false" text="Set Web RTC Offer Answer" press="onSetWebRTCOfferAnswer" />
+			</Panel>
 		</content>
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer />
+				<Button text="Offer WebRTC Sync Session" press="onOfferWebRTCSyncSession" />
+				<Button text="Join WebRTC Sync Session" press="onJoinWebRTCSyncSession" />
+			</Toolbar>
+		</footer>
 	</Page>
 </mvc:View>

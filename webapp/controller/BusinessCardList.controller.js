@@ -34,6 +34,20 @@ sap.ui.define([
 			}).then(function(sLastNames) {
 				me._aLastNames = sLastNames.split(/\n/);
 			});
+			
+			sap.ui.getCore().getEventBus().subscribe("Home", "DataChannelAvailable", function (sChannelId, sEventId, oEvent) {
+				me.oDataChannel = oEvent.channel;
+				me.byId("WebRTCSendButton").setVisible(true);
+			});
+		},
+		onSendToOtherWebRTCClient: function() {
+			var me = this;
+			var oList = this.byId("list");
+			oList.getSelectedItems().forEach(function (oItem) {
+				var oBusinessCard = oItem.getBindingContext().getObject();
+				var sBusinessCard = JSON.stringify(oBusinessCard);
+				me.oDataChannel.send(sBusinessCard);
+			});
 		},
 		/**
 		 * When the add business card button is clicked
@@ -129,7 +143,10 @@ sap.ui.define([
 			if (!("LastName" in oBusinessCard)) {
 				oBusinessCard.LastName = "Unknown";
 			}
-			oModel.appendItem("/BusinessCards", oBusinessCard);
+			
+			var aBusinessCards = oModel.getProperty("/BusinessCards");
+			aBusinessCards.push(oBusinessCard);
+			oModel.setProperty("/BusinessCards", aBusinessCards);
 		},
 		/**
 		 * This function send an image to the google vision API and
@@ -208,14 +225,23 @@ sap.ui.define([
 			// Remove all items that are selected
 			var oList = this.byId("list");
 			var oModel = this.getView().getModel();
-			oList.getSelectedContexts().forEach(function(oContext) {
-				var sPath = oContext.getPath();
-				oModel.removeItemWithPath(sPath);
-				// if the currently active card is deleted
-				if (("/" + HashChanger.getInstance().getHash()) === sPath) {
-					UIComponent.getRouterFor(that).navTo("Home");
-				}
+			var aBusinessCards = oModel.getProperty("/BusinessCards");
+			var aIndexToRemove = oList.getSelectedContexts().map(function(oContext) {
+				// return index from path
+				return parseInt(oContext.getPath().match(/(\d+)$/)[1]);
 			});
+			var aPathToRemove = oList.getSelectedContexts().map(function(oContext) {
+				return oContext.getPath();
+			});
+			// get all elements that are not selected
+			aBusinessCards = aBusinessCards.filter(function (e, i) {
+				return !(aIndexToRemove.includes(i));
+			});
+			oModel.setProperty("/BusinessCards", aBusinessCards);
+			// if the currently active card is deleted
+			if (aPathToRemove.includes("/" + HashChanger.getInstance().getHash()) ) {
+				UIComponent.getRouterFor(that).navTo("Home");
+			}
 		}
 	});
 });
