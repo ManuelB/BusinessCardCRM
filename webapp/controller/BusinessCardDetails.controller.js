@@ -18,7 +18,9 @@ sap.ui.define([
 				me.getView().bindElement("/BusinessCards/"+oEvent.getParameter("arguments").id);
 			});
 		},
-		
+		onHome: function() {
+			UIComponent.getRouterFor(this).navTo("Home");
+		},
 		formatJSON: function (oObject) {
 			return "<pre>"+JSON.stringify(oObject, null, 2)+"</pre>";
 		},

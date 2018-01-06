@@ -6,6 +6,11 @@
 			<ObjectPageHeader objectImageURI="{ImageBase64}" objectTitle="{FirstName} {LastName}" objectImageShape="Circle"
 				objectImageAlt="{FirstName} {LastName}" objectSubtitle="{Position}" isObjectIconAlwaysVisible="false" isObjectTitleAlwaysVisible="false"
 				isObjectSubtitleAlwaysVisible="false">
+				<breadcrumbs>
+					<m:Breadcrumbs id="breadcrumbsId" currentLocationText="{FirstName} {LastName}">
+						<m:Link text="Home" press="onHome"/>
+					</m:Breadcrumbs>
+				</breadcrumbs>
 				<actions>
 					<ObjectPageHeaderActionButton text="Send to CRM" hideIcon="true" hideText="false" type="Emphasized" press="onSendToCRM"/>
 				</actions>

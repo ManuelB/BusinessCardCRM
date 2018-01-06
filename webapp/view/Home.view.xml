@@ -1,6 +1,6 @@
 <mvc:View xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:core="sap.ui.core" controllerName="incentergy.bccrm.BusinessCardCRM.controller.Home">
-	<Page title="{i18n>appTitle}">
+	<Page title="{i18n>appTitle}" showNavButton="{device>/system/phone}" navButtonPress="onNavButtonPress">
 		<content>
 			<Panel headerText="What is this application good for?">
 				<Text text="This application can be used to make a photo of a business card.

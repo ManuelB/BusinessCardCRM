@@ -21,6 +21,11 @@ sap.ui.define([
 			    }]
 			};
 		},
+		onNavButtonPress: function() {
+			var oSplitApp = this.getView().getParent().getParent();
+			var oMaster = oSplitApp.getMasterPages()[0];
+			oSplitApp.toMaster(oMaster, "flip");
+		},
 		onOfferWebRTCSyncSession: function() {
 			var me = this;
 			this.oRTCPeerConnection = new RTCPeerConnection(this._oConfiguration);
@@ -34,7 +39,11 @@ sap.ui.define([
 			};
 			this.oDataChannel = oDataChannel;
 			this.oRTCPeerConnection.onicecandidate = function (oEvent) {
-				console.log("Offering connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
+				// console.log("Offering connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
+				// Wait until we found all the ice candidates before offering the session
+				if(!oEvent.candidate) {
+					me.byId("webRTCSDPText").setContent("<p>"+JSON.stringify(me.oRTCPeerConnection.localDescription)+"</p>");
+				}
 			};
 			this.oRTCPeerConnection.createOffer().then(function (oSDPOffer) {
 				return me.oRTCPeerConnection.setLocalDescription(oSDPOffer);
@@ -46,7 +55,6 @@ sap.ui.define([
 				// s=-
 				// t=0 0
 				// a=msid-semantic: WMS
-				me.byId("webRTCSDPText").setContent("<p>"+JSON.stringify(me.oRTCPeerConnection.localDescription)+"</p>");
 				me.byId("webRTCOfferAnswer").setVisible(true);
 				me.byId("webRTCOfferAnswerButton").setVisible(true);
 			}).catch(function(reason) {
@@ -80,12 +88,15 @@ sap.ui.define([
 					  };
 					};
 					oRTCJoinPeerConnection.onicecandidate = function (oEvent) {
-						console.log("Joining connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
+						// console.log("Joining connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
+						if(!oEvent.candidate) {
+							me.byId("webRTCSDPText").setContent("<p>"+JSON.stringify(oRTCJoinPeerConnection.localDescription)+"</p>");
+						}
 					};
 					oRTCJoinPeerConnection.setRemoteDescription(oSDPOffer);
 					oRTCJoinPeerConnection.createAnswer().then(function (oAnswer) {
 						oRTCJoinPeerConnection.setLocalDescription(oAnswer);
-						console.log(JSON.stringify(oAnswer));
+						// console.log(JSON.stringify(oAnswer));
 					});
 					me._oWebRTCJoinDialog.close();
 				}});

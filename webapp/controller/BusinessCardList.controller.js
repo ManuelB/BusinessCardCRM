@@ -1,7 +1,8 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/UIComponent",
-	"sap/ui/core/routing/HashChanger"
+	"sap/ui/core/routing/HashChanger",
+	"sap/m/MessageToast"
 ], function(Controller, UIComponent, HashChanger) {
 	"use strict";
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList", {
@@ -40,6 +41,11 @@ sap.ui.define([
 				me.byId("WebRTCSendButton").setVisible(true);
 			});
 		},
+		onNavButtonPress: function() {
+			var oSplitApp = this.getView().getParent().getParent();
+			var oMaster = oSplitApp.getMasterPages()[0];
+			oSplitApp.toMaster(oMaster, "flip");
+		},
 		onSendToOtherWebRTCClient: function() {
 			var me = this;
 			var oList = this.byId("list");
@@ -56,18 +62,24 @@ sap.ui.define([
 			var me = this;
 			// creating input on-the-fly
 			var domInput = document.createElement("input");
-			var input = jQuery(domInput);
-			input.attr("type", "file");
-			input.change(function() {
+			domInput.type = "file";
+			domInput.onchange = function() {
+				me.byId("list").setBusy(true);
 				me.processImageOCR(domInput.files[0]).then(function(oOCRResults) {
-					me.processText(oOCRResults.OCRResult.responses[0].fullTextAnnotation.text).then(function(oNERResults) {
-						oOCRResults.NERResult = oNERResults.NERResult;
-						me.addBusinessCard(oOCRResults);
-					});
+					try {
+						me.processText(oOCRResults.OCRResult.responses[0].fullTextAnnotation.text).then(function(oNERResults) {
+							oOCRResults.NERResult = oNERResults.NERResult;
+							me.addBusinessCard(oOCRResults);
+							me.byId("list").setBusy(false);
+						});
+					} catch(e) {
+						MessageToast.show("Could not add business card. "+e);
+						me.byId("list").setBusy(false);
+					}
 				});
-			});
+			};
 			// add onchange handler if you wish to get the file :)
-			input.trigger("click"); // opening dialog
+			domInput.click(); // opening dialog
 		},
 		addBusinessCard: function(oBusinessCard) {
 			var oModel = this.getView().getModel();
