@@ -51,8 +51,42 @@ sap.ui.define([
 			oList.getSelectedItems().forEach(function (oItem) {
 				var oBusinessCard = oItem.getBindingContext().getObject();
 				var sBusinessCard = JSON.stringify(oBusinessCard);
-				me.oDataChannel.send(sBusinessCard);
+				try {
+					// If I send more then ~65kb it was not correctly
+					// recognized on my android device
+					// https://lgrahl.de/articles/demystifying-webrtc-dc-size-limit.html
+					// https://bugzilla.mozilla.org/show_bug.cgi?id=979417
+					// https://bugs.chromium.org/p/webrtc/issues/detail?id=7774&desc=3
+					// I am going to reduce the package size to the recommend
+					// 16kb
+					if(sBusinessCard.length > 16384) {
+						// Hacky solution
+						var aChunks = me.chunkSubstr(sBusinessCard, 16384);
+						// send the amount of messages we are going to send
+						me.oDataChannel.send(JSON.stringify({"chunkedMessageFrames": aChunks.length}));
+						// Hopefully they are delivered in the correct order ...
+						aChunks.forEach(function (sChunk) {
+							me.oDataChannel.send(sChunk);
+						});
+					} else {
+				    	me.oDataChannel.send(sBusinessCard);
+					}
+				} catch(e) {
+					MessageToast.show("Error sending Business Card: "+e);
+				}
 			});
+		},
+		/**
+		 * https://stackoverflow.com/a/29202760/1059979
+		 */
+		chunkSubstr : function (str, size) {
+		  var numChunks = Math.ceil(str.length / size);
+		  var aChunks = new Array(numChunks);
+		
+		  for (var i = 0, o = 0; i < numChunks; ++i, o += size) {
+		    aChunks[i] = str.substr(o, size);
+		  }
+		  return aChunks;
 		},
 		/**
 		 * When the add business card button is clicked

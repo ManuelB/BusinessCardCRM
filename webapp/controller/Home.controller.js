@@ -12,14 +12,14 @@ sap.ui.define([
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.Home", {
 		onInit: function() {
 			this._oConfiguration = {
-			  'iceServers': [{
-			    'urls': 'stun:stun.l.google.com:19302'
-			  }]
+				'iceServers': [{
+					'urls': 'stun:stun.l.google.com:19302'
+				}]
 			};
 			this._oMediaConstraints = {
-			    mandatory: [{
-			        RtpDataChannels: true
-			    }]
+				mandatory: [{
+					RtpDataChannels: true
+				}]
 			};
 		},
 		onNavButtonPress: function() {
@@ -28,25 +28,25 @@ sap.ui.define([
 		onOfferWebRTCSyncSession: function() {
 			var me = this;
 			this.oRTCPeerConnection = new RTCPeerConnection(this._oConfiguration);
-			
+
 			// Establish your peer connection using your signaling channel here
 			var oDataChannel =
-			  this.oRTCPeerConnection.createDataChannel("Model");
-			
-			oDataChannel.onerror = function (error) {
-			  jQuery.sap.log.error("Data Channel Error:"+ error);
+				this.oRTCPeerConnection.createDataChannel("Model");
+
+			oDataChannel.onerror = function(error) {
+				jQuery.sap.log.error("Data Channel Error:" + error);
 			};
 			this.oDataChannel = oDataChannel;
-			this.oRTCPeerConnection.onicecandidate = function (oEvent) {
+			this.oRTCPeerConnection.onicecandidate = function(oEvent) {
 				// console.log("Offering connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
 				// Wait until we found all the ice candidates before offering the session
-				if(!oEvent.candidate) {
-					me.byId("webRTCSDPText").setContent("<p>"+JSON.stringify(me.oRTCPeerConnection.localDescription)+"</p>");
+				if (!oEvent.candidate) {
+					me.byId("webRTCSDPText").setContent("<p>" + JSON.stringify(me.oRTCPeerConnection.localDescription) + "</p>");
 				}
 			};
-			this.oRTCPeerConnection.createOffer().then(function (oSDPOffer) {
+			this.oRTCPeerConnection.createOffer().then(function(oSDPOffer) {
 				return me.oRTCPeerConnection.setLocalDescription(oSDPOffer);
-			}).then(function () {
+			}).then(function() {
 				me.byId("webRTCSDPPanel").setHeaderText("Click in the other browser on Join WebRTC Session and paste the following text");
 				// https://webrtchacks.com/sdp-anatomy/
 				// v=0
@@ -57,49 +57,85 @@ sap.ui.define([
 				me.byId("webRTCOfferAnswer").setVisible(true);
 				me.byId("webRTCOfferAnswerButton").setVisible(true);
 			}).catch(function(reason) {
-			    // An error occurred, so handle the failure to connect
-			    MessageToast.show("Error: "+reason);
+				// An error occurred, so handle the failure to connect
+				MessageToast.show("Error: " + reason);
 			});
 		},
 		onSetWebRTCOfferAnswer: function() {
 			this.oRTCPeerConnection.setRemoteDescription(JSON.parse(this.byId("webRTCOfferAnswer").getValue()));
-			sap.ui.getCore().getEventBus().publish("Home", "DataChannelAvailable", {"channel": this.oDataChannel});
+			sap.ui.getCore().getEventBus().publish("Home", "DataChannelAvailable", {
+				"channel": this.oDataChannel
+			});
 		},
 		onJoinWebRTCSyncSession: function() {
 			var me = this;
-			if(!this._oWebRTCJoinDialog) {
-				var oTextarea = new TextArea({rows: 10, cols: 20});
-				var oJoinButton = new Button({text: "Join", "press": function () {
-					var sSDP = oTextarea.getValue();
-					var oSDPOffer = JSON.parse(sSDP);
-					var oRTCJoinPeerConnection = new RTCPeerConnection(me._oConfiguration);
-					oRTCJoinPeerConnection.ondatachannel = function (oEvent) {
-					  var oReceiveChannel = oEvent.channel;
-					  oReceiveChannel.onmessage = function (oMessage) {
-					  	var oModel = me.getView().getModel();
-					  	var oBusinessCard = JSON.parse(oMessage.data);
-					  	var aBusinessCards = oModel.getProperty("/BusinessCards");
-						aBusinessCards.push(oBusinessCard);
-						oModel.setProperty("/BusinessCards", aBusinessCards);
-					  };
-					  oReceiveChannel.onerror = function (error) {
-					  	jQuery.sap.log.error("Data Channel Error:"+ error);
-					  };
-					};
-					oRTCJoinPeerConnection.onicecandidate = function (oEvent) {
-						// console.log("Joining connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
-						if(!oEvent.candidate) {
-							me.byId("webRTCSDPText").setContent("<p>"+JSON.stringify(oRTCJoinPeerConnection.localDescription)+"</p>");
-						}
-					};
-					oRTCJoinPeerConnection.setRemoteDescription(oSDPOffer);
-					oRTCJoinPeerConnection.createAnswer().then(function (oAnswer) {
-						oRTCJoinPeerConnection.setLocalDescription(oAnswer);
-						// console.log(JSON.stringify(oAnswer));
-					});
-					me._oWebRTCJoinDialog.close();
-				}});
-				this._oWebRTCJoinDialog = new Dialog({title:"Paste WebRTC SDP here", content: [oTextarea], endButton: oJoinButton});
+			if (!this._oWebRTCJoinDialog) {
+				var oTextarea = new TextArea({
+					rows: 10,
+					cols: 20
+				});
+				var oJoinButton = new Button({
+					text: "Join",
+					"press": function() {
+						var sSDP = oTextarea.getValue();
+						var oSDPOffer = JSON.parse(sSDP);
+						var oRTCJoinPeerConnection = new RTCPeerConnection(me._oConfiguration);
+						oRTCJoinPeerConnection.ondatachannel = function(oEvent) {
+							var oReceiveChannel = oEvent.channel;
+							var bChunkedMessageMode = false;
+							var iChunkMessageCount = 0;
+							var sMessageData = "";
+							oReceiveChannel.onmessage = function(oMessage) {
+								if(!bChunkedMessageMode) {
+									sMessageData = oMessage.data;
+								} else {
+									iChunkMessageCount--;
+									sMessageData += oMessage.data;
+									if(iChunkMessageCount > 0) {
+										return;
+									} else {
+										bChunkedMessageMode = false;
+									}
+								}
+								try {
+									var oModel = me.getView().getModel();
+									var oParsedMessage = JSON.parse(sMessageData);
+									if("chunkedMessageFrames" in oParsedMessage) {
+										bChunkedMessageMode = true;
+										sMessageData = "";
+										iChunkMessageCount = oParsedMessage.chunkedMessageFrames;
+										return;
+									}
+									var aBusinessCards = oModel.getProperty("/BusinessCards");
+									aBusinessCards.push(oParsedMessage);
+									oModel.setProperty("/BusinessCards", aBusinessCards);
+								} catch (e) {
+									MessageToast.show("Error receiving Business Card: " + e);
+								}
+							};
+							oReceiveChannel.onerror = function(error) {
+								jQuery.sap.log.error("Data Channel Error:" + error);
+							};
+						};
+						oRTCJoinPeerConnection.onicecandidate = function(oEvent) {
+							// console.log("Joining connection: "+((oEvent && oEvent.candidate) ? oEvent.candidate.candidate : "null"));
+							if (!oEvent.candidate) {
+								me.byId("webRTCSDPText").setContent("<p>" + JSON.stringify(oRTCJoinPeerConnection.localDescription) + "</p>");
+							}
+						};
+						oRTCJoinPeerConnection.setRemoteDescription(oSDPOffer);
+						oRTCJoinPeerConnection.createAnswer().then(function(oAnswer) {
+							oRTCJoinPeerConnection.setLocalDescription(oAnswer);
+							// console.log(JSON.stringify(oAnswer));
+						});
+						me._oWebRTCJoinDialog.close();
+					}
+				});
+				this._oWebRTCJoinDialog = new Dialog({
+					title: "Paste WebRTC SDP here",
+					content: [oTextarea],
+					endButton: oJoinButton
+				});
 			}
 			this._oWebRTCJoinDialog.open();
 		}
