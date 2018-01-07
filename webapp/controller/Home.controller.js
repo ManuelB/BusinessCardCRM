@@ -1,11 +1,12 @@
 sap.ui.define([
 	"jquery.sap.global",
 	"sap/ui/core/mvc/Controller",
+	"sap/ui/core/UIComponent",
 	"sap/m/MessageToast",
 	"sap/m/Dialog",
 	"sap/m/TextArea",
 	"sap/m/Button"
-], function(jQuery, Controller, MessageToast, Dialog, TextArea, Button) {
+], function(jQuery, Controller, UIComponent, MessageToast, Dialog, TextArea, Button) {
 	"use strict";
 
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.Home", {
@@ -22,9 +23,7 @@ sap.ui.define([
 			};
 		},
 		onNavButtonPress: function() {
-			var oSplitApp = this.getView().getParent().getParent();
-			var oMaster = oSplitApp.getMasterPages()[0];
-			oSplitApp.toMaster(oMaster, "flip");
+			UIComponent.getRouterFor(this).navTo("Home");
 		},
 		onOfferWebRTCSyncSession: function() {
 			var me = this;

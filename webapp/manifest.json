@@ -76,6 +76,14 @@
 					"pattern": "",
 					"name": "Home",
 					"target": [
+						"homeDetails",
+						"businessCardList"
+					]
+				},
+				{
+					"pattern": "homeDetails",
+					"name": "HomeDetails",
+					"target": [
 						"businessCardList",
 						"homeDetails"
 					]
@@ -100,17 +108,21 @@
 			"targets": {
 				"homeDetails": {
 					"viewName": "Home",
+					"viewLevel": 2,
 					"controlId": "splitApp",
-					"controlAggregation": "detailPages"
+					"controlAggregation": "detailPages",
+					"clearTarget": true
 				},
 				"businessCardList": {
 					"viewName": "BusinessCardList",
+					"viewLevel": 1,
 					"controlId": "splitApp",
 					"controlAggregation": "masterPages",
-					"clearControlAggregation": true
+					"clearTarget": true
 				},
 				"businessCardDetails": {
 					"viewName": "BusinessCardDetails",
+					"viewLevel": 2,
 					"controlId": "splitApp",
 					"controlAggregation": "detailPages"
 				},

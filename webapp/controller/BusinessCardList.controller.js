@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/UIComponent",
 	"sap/ui/core/routing/HashChanger",
-	"sap/m/MessageToast"
-], function(Controller, UIComponent, HashChanger) {
+	"sap/m/MessageToast",
+	"sap/ui/Device"
+], function(Controller, UIComponent, HashChanger, MessageToast, Device) {
 	"use strict";
 	return Controller.extend("incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList", {
 		onInit: function() {
@@ -42,9 +43,7 @@ sap.ui.define([
 			});
 		},
 		onNavButtonPress: function() {
-			var oSplitApp = this.getView().getParent().getParent();
-			var oMaster = oSplitApp.getMasterPages()[0];
-			oSplitApp.toMaster(oMaster, "flip");
+			UIComponent.getRouterFor(this).navTo("HomeDetails");
 		},
 		onSendToOtherWebRTCClient: function() {
 			var me = this;
@@ -223,11 +222,13 @@ sap.ui.define([
 		 */
 		onPressItem: function(oEvent) {
 			var oListItem = oEvent.getParameter("listItem");
+			var bReplace = !Device.system.phone;
+
 			UIComponent.getRouterFor(this).navTo("BusinessCards", {
 				// get everything after the last /
 				// e.g. /BusinessCards/-L0__dp2cMojTFGBMOwX -> -L0__dp2cMojTFGBMOwX
 				"id": oListItem.getBindingContextPath().match(/\/([^\/]*)$/)[1]
-			});
+			}, bReplace);
 		},
 		/**
 		 *@memberOf incentergy.bccrm.BusinessCardCRM.controller.BusinessCardList
