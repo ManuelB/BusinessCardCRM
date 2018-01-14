@@ -40,6 +40,8 @@
 									<m:Input value="{LastName}"/>
 									<m:Label text="{i18n>Position}"/>
 									<m:Input value="{Position}"/>
+									<m:Label text="{i18n>Organization}"/>
+									<m:Input value="{Organization}"/>
 									<m:Label text="{i18n>Street}"/>
 									<m:Input value="{Street}"/>
 									<m:Label text="{i18n>ZipCode}"/>
@@ -52,6 +54,8 @@
 									<m:Input value="{Phone}"/>
 									<m:Label text="{i18n>Email}"/>
 									<m:Input value="{Email}"/>
+									<m:Label text="{i18n>Notes}"/>
+									<m:TextArea value="{Notes}"  growing="true" width="100%"/>
 								</f:content>
 							</f:SimpleForm>
 						</blocks>

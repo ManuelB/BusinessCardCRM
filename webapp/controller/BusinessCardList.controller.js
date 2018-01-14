@@ -176,6 +176,10 @@ sap.ui.define([
 							oBusinessCard.Street = oEntity.name;
 						}
 
+					} else if (oEntity.type === "ORGANIZATION") {
+						oBusinessCard.Organization = oEntity.name;
+					} else if (oEntity.type === "COUNTRY") {
+						oBusinessCard.Country = oEntity.name;
 					}
 				}
 
@@ -187,6 +191,15 @@ sap.ui.define([
 			}
 			if (!("LastName" in oBusinessCard)) {
 				oBusinessCard.LastName = "Unknown";
+			}
+			if (!("Organization" in oBusinessCard)) {
+				oBusinessCard.Organization = "";
+			}
+			if (!("State" in oBusinessCard)) {
+				oBusinessCard.State = "";
+			}
+			if (!("Country" in oBusinessCard)) {
+				oBusinessCard.Country = "";
 			}
 			
 			var aBusinessCards = oModel.getProperty("/BusinessCards");
